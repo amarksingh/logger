@@ -6,6 +6,7 @@ const InvalidArgumentException = require('./InvalidArgumentException')
 const { Winston, transports, format } = require('./winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 const fs = require('fs')
+const path = require('path')
 const { Console } = require('console');
 
 class LogManager extends Manager {
@@ -15,7 +16,7 @@ class LogManager extends Manager {
     stack($channels, $channel = null) {
         return new Logger(
             this.createStackDriver({
-                channels: this.$drivers
+                channels: $channels
             }),
         );
     }
@@ -33,17 +34,26 @@ class LogManager extends Manager {
     }
 
     createEmergencyLogger() {
-        return new Logger(new Winston('Ostro', this.prepareHandlers([new StreamHandler(
-            this.$container.storagePath() + '/logs/Ostro.log', this.level({
-                'level': 'debug'
-            })
-        )])), this.$container['events']);
+        const storagePath = typeof this.$container.storagePath === 'function'
+            ? this.$container.storagePath()
+            : path.resolve('storage');
+        return new Logger(
+            new Winston('Ostro', this.prepareHandlers([
+                this.prepareHandler(
+                    new transports.File({
+                        filename: path.join(storagePath, 'logs', 'Ostro.log'),
+                        level: 'debug'
+                    })
+                )
+            ])),
+            this.$container['events']
+        );
     }
 
     resolve($name) {
         let $config = this.configurationFor($name);
         if (!($config)) {
-            throw new InvalidArgumentException("Log [{" + $name + "}] is not defined.");
+            throw new InvalidArgumentException("Log [" + $name + "] is not defined.");
         }
         return super.resolve($name, $config)
     }
@@ -87,7 +97,7 @@ class LogManager extends Manager {
 
     createConsoleDriver($config) {
         return new Winston(($config), [
-            this.prepareHandler(new transports.Console({ colorize: true, format: format.colorize() }))
+            this.prepareHandler(new transports.Console({ colorize: true, format: format.colorize() }), $config)
         ]);
     }
 
