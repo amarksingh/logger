@@ -4,7 +4,7 @@
   "description": "Logger module for OstroJS",
   "main": "LogManager.js",
   "scripts": {
-    "test": "jest"
+    "test": "npx c8 npx jest"
   },
   "dependencies": {
     "@ostro/contracts": "^1.0.0",
