@@ -1,13 +1,34 @@
 const { createLogger, transports, format } = require('winston')
 const kLogger = Symbol('logger')
 class Winston {
+    /**
+     * constructor method.
+     *
+     * @param {any} config
+     * @param {any} handlers
+     * @returns {any}
+     */
     constructor(config, handlers) {
         this[kLogger] = this.createLogger(handlers)
     }
 
+    /**
+     * log method.
+     *
+     * @param {any} level
+     * @param {any} message
+     * @param {any} context
+     * @returns {any}
+     */
     log(level, message, context) {
         this[kLogger].log(level, message, context);
     }
+    /**
+     * createLogger method.
+     *
+     * @param {any} handlers
+     * @returns {any}
+     */
     createLogger(handlers) {
         return createLogger({
             levels: {
@@ -27,6 +48,11 @@ class Winston {
             transports: handlers
         })
     }
+    /**
+     * getHandler method.
+     *
+     * @returns {any}
+     */
     getHandler() {
         return this[kLogger]
     }

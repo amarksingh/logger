@@ -11,8 +11,19 @@ const { Console } = require('console');
 
 class LogManager extends Manager {
 
+    /**
+     * $type property.
+     * @type {any}
+     */
     $type = 'logging';
 
+    /**
+     * stack method.
+     *
+     * @param {any} channels
+     * @param {any} channel
+     * @returns {any}
+     */
     stack($channels, $channel = null) {
         return new Logger(
             this.createStackDriver({
@@ -21,18 +32,41 @@ class LogManager extends Manager {
         );
     }
 
+    /**
+     * channel method.
+     *
+     * @param {any} channel
+     * @returns {any}
+     */
     channel($channel = null) {
         return this.driver($channel);
     }
 
+    /**
+     * driver method.
+     *
+     * @param {any} driver
+     * @returns {any}
+     */
     driver($driver = null) {
         return this.get($driver || this.getDefaultDriver());
     }
 
+    /**
+     * get method.
+     *
+     * @param {any} name
+     * @returns {any}
+     */
     get($name) {
         return this.$drivers[$name] || (this.$drivers[$name] = new Logger(this.resolve($name), this.configurationFor($name)))
     }
 
+    /**
+     * createEmergencyLogger method.
+     *
+     * @returns {any}
+     */
     createEmergencyLogger() {
         const storagePath = typeof this.$container.storagePath === 'function'
             ? this.$container.storagePath()
@@ -50,6 +84,12 @@ class LogManager extends Manager {
         );
     }
 
+    /**
+     * resolve method.
+     *
+     * @param {any} name
+     * @returns {any}
+     */
     resolve($name) {
         let $config = this.configurationFor($name);
         if (!($config)) {
@@ -59,12 +99,24 @@ class LogManager extends Manager {
     }
 
 
+    /**
+     * createCustomDriver method.
+     *
+     * @param {any} config
+     * @returns {any}
+     */
     createCustomDriver($config) {
         let $via = $config['via']
         let $factory = is_callable($via) ? $via : this.$container.make($via);
         return $factory($config);
     }
 
+    /**
+     * createStackDriver method.
+     *
+     * @param {any} config
+     * @returns {any}
+     */
     createStackDriver($config) {
         let $handlers = collect($config['channels']).flatMap(($channel) => {
             let ch = this.channel($channel)
@@ -76,6 +128,12 @@ class LogManager extends Manager {
         return new Winston(($config), $handlers);
     }
 
+    /**
+     * createSyslogDriver method.
+     *
+     * @param {any} config
+     * @returns {any}
+     */
     createSyslogDriver($config) {
         const output = fs.createWriteStream(path.resolve('storage/logs/application.log'));
         const errorOutput = fs.createWriteStream(path.resolve('storage/logs/application.log'));
@@ -85,6 +143,12 @@ class LogManager extends Manager {
         });
     }
 
+    /**
+     * createSingleDriver method.
+     *
+     * @param {any} config
+     * @returns {any}
+     */
     createSingleDriver($config) {
         return new Winston(($config), [
             this.prepareHandler(
@@ -95,12 +159,24 @@ class LogManager extends Manager {
         ]);
     }
 
+    /**
+     * createConsoleDriver method.
+     *
+     * @param {any} config
+     * @returns {any}
+     */
     createConsoleDriver($config) {
         return new Winston(($config), [
             this.prepareHandler(new transports.Console({ colorize: true, format: format.colorize() }), $config)
         ]);
     }
 
+    /**
+     * createDailyDriver method.
+     *
+     * @param {any} config
+     * @returns {any}
+     */
     createDailyDriver($config) {
         return new Winston(($config), [
             this.prepareHandler(new DailyRotateFile({
@@ -114,14 +190,33 @@ class LogManager extends Manager {
         ]);
     }
 
+    /**
+     * prepareTransport method.
+     *
+     * @param {any} transport
+     * @returns {any}
+     */
     prepareTransport(transport) {
         return transport
     }
 
+    /**
+     * prepareHandlers method.
+     *
+     * @param {any} handlers
+     * @returns {any}
+     */
     prepareHandlers($handlers) {
         return $handlers;
     }
 
+    /**
+     * prepareHandler method.
+     *
+     * @param {any} handler
+     * @param {any} config
+     * @returns {any}
+     */
     prepareHandler($handler, $config = {}) {
         if (!($config['formatter'])) {
             $handler.format = (this.formatter());
@@ -132,14 +227,32 @@ class LogManager extends Manager {
         return $handler;
     }
 
+    /**
+     * formatter method.
+     *
+     * @param {any} config
+     * @returns {any}
+     */
     formatter(config) {
         return new LineFormatter(config);
     }
 
+    /**
+     * configurationFor method.
+     *
+     * @param {any} name
+     * @returns {any}
+     */
     configurationFor(name) {
         return super.getConfig(`channels.${name}`);
     }
 
+    /**
+     * report method.
+     *
+     * @param {any} exception
+     * @returns {any}
+     */
     report($exception) {
         this.driver().error($exception)
     }

@@ -1,9 +1,20 @@
 const { format: { combine, splat, simple, timestamp, json, label, printf, prettyPrint, colorize } } = require('winston')
 
 class Formatter {
+    /**
+     * constructor method.
+     *
+     * @param {any} config
+     * @returns {any}
+     */
     constructor(config = {}) {
         return this.combine(config)
     }
+    /**
+     * messageFormat method.
+     *
+     * @returns {any}
+     */
     messageFormat() {
         return printf(({ level, message, timestamp }) => {
             if (message instanceof Error) {
@@ -14,6 +25,11 @@ class Formatter {
             return `[${timestamp}] [${level}] : ${message}\n`
         })
     }
+    /**
+     * combine method.
+     *
+     * @returns {any}
+     */
     combine() {
         return combine(
             timestamp(),
