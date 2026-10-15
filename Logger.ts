@@ -8,7 +8,7 @@ class Logger {
      * @param {any} config
      * @returns {any}
      */
-    constructor($logger, $config) {
+    constructor($logger: any, $config: Record<string, any>) {
         this[kLogger] = $logger
     }
 
@@ -19,7 +19,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    emergency($message, $context = []) {
+    emergency($message: string, $context: any[] = []) {
         this.writeLog('emerg', $message, $context);
     }
 
@@ -30,7 +30,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    alert($message, $context = []) {
+    alert($message: string, $context: any[] = []) {
         this.writeLog('alert', $message, $context);
     }
 
@@ -41,7 +41,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    critical($message, $context = []) {
+    critical($message: string, $context: any[] = []) {
         this.writeLog('crit', $message, $context);
     }
 
@@ -52,7 +52,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    error($message, $context = []) {
+    error($message: string, $context: any[] = []) {
         this.writeLog('error', $message, $context);
     }
 
@@ -63,7 +63,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    warning($message, $context = []) {
+    warning($message: string, $context: any[] = []) {
         this.writeLog('warning', $message, $context);
     }
 
@@ -74,7 +74,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    notice($message, $context = []) {
+    notice($message: string, $context: any[] = []) {
         this.writeLog('notice', $message, $context);
     }
 
@@ -85,7 +85,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    info($message, $context = []) {
+    info($message: string, $context: any[] = []) {
         this.writeLog('info', $message, $context);
     }
 
@@ -96,7 +96,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    debug($message, $context = []) {
+    debug($message: string, $context: any[] = []) {
         this.writeLog('debug', $message, $context);
     }
 
@@ -108,7 +108,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    log($level, $message, $context = []) {
+    log($level: any, $message: string, $context: any[] = []) {
         this.writeLog('log', $message, $context);
     }
 
@@ -120,7 +120,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    write($level, $message, $context = []) {
+    write($level: any, $message: string, $context: any[] = []) {
         this.writeLog('write', $message, $context);
     }
 
@@ -132,7 +132,7 @@ class Logger {
      * @param {any} context
      * @returns {any}
      */
-    writeLog($level, $message, $context) {
+    writeLog($level: any, $message: string, $context: any) {
         this[kLogger].log($level, $message, $context);
     }
 

@@ -8,7 +8,7 @@ class Winston {
      * @param {any} handlers
      * @returns {any}
      */
-    constructor(config, handlers) {
+    constructor(config: Record<string, any>, handlers: any) {
         this[kLogger] = this.createLogger(handlers)
     }
 
@@ -20,7 +20,7 @@ class Winston {
      * @param {any} context
      * @returns {any}
      */
-    log(level, message, context) {
+    log(level: any, message: string, context: any) {
         this[kLogger].log(level, message, context);
     }
     /**
@@ -29,7 +29,7 @@ class Winston {
      * @param {any} handlers
      * @returns {any}
      */
-    createLogger(handlers) {
+    createLogger(handlers: any) {
         return createLogger({
             levels: {
                 emerg: 0,

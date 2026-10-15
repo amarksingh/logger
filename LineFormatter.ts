@@ -7,7 +7,7 @@ class Formatter {
      * @param {any} config
      * @returns {any}
      */
-    constructor(config = {}) {
+    constructor(config: Record<string, any> = {}) {
         return this.combine(config)
     }
     /**

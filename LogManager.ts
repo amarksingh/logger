@@ -24,7 +24,7 @@ class LogManager extends Manager {
      * @param {any} channel
      * @returns {any}
      */
-    stack($channels, $channel = null) {
+    stack($channels: any, $channel: any = null) {
         return new Logger(
             this.createStackDriver({
                 channels: $channels
@@ -38,7 +38,7 @@ class LogManager extends Manager {
      * @param {any} channel
      * @returns {any}
      */
-    channel($channel = null) {
+    channel($channel: any = null) {
         return this.driver($channel);
     }
 
@@ -48,7 +48,7 @@ class LogManager extends Manager {
      * @param {any} driver
      * @returns {any}
      */
-    driver($driver = null) {
+    driver($driver: any = null) {
         return this.get($driver || this.getDefaultDriver());
     }
 
@@ -58,7 +58,7 @@ class LogManager extends Manager {
      * @param {any} name
      * @returns {any}
      */
-    get($name) {
+    get($name: string) {
         return this.$drivers[$name] || (this.$drivers[$name] = new Logger(this.resolve($name), this.configurationFor($name)))
     }
 
@@ -90,7 +90,7 @@ class LogManager extends Manager {
      * @param {any} name
      * @returns {any}
      */
-    resolve($name) {
+    resolve($name: string) {
         let $config = this.configurationFor($name);
         if (!($config)) {
             throw new InvalidArgumentException("Log [" + $name + "] is not defined.");
@@ -105,7 +105,7 @@ class LogManager extends Manager {
      * @param {any} config
      * @returns {any}
      */
-    createCustomDriver($config) {
+    createCustomDriver($config: Record<string, any>) {
         let $via = $config['via']
         let $factory = is_callable($via) ? $via : this.$container.make($via);
         return $factory($config);
@@ -117,7 +117,7 @@ class LogManager extends Manager {
      * @param {any} config
      * @returns {any}
      */
-    createStackDriver($config) {
+    createStackDriver($config: Record<string, any>) {
         let $handlers = collect($config['channels']).flatMap(($channel) => {
             let ch = this.channel($channel)
             return ch.getLogger().getHandler()
@@ -134,7 +134,7 @@ class LogManager extends Manager {
      * @param {any} config
      * @returns {any}
      */
-    createSyslogDriver($config) {
+    createSyslogDriver($config: Record<string, any>) {
         const output = fs.createWriteStream(path.resolve('storage/logs/application.log'));
         const errorOutput = fs.createWriteStream(path.resolve('storage/logs/application.log'));
         return new Console({
@@ -149,7 +149,7 @@ class LogManager extends Manager {
      * @param {any} config
      * @returns {any}
      */
-    createSingleDriver($config) {
+    createSingleDriver($config: Record<string, any>) {
         return new Winston(($config), [
             this.prepareHandler(
                 new transports.File({
@@ -165,7 +165,7 @@ class LogManager extends Manager {
      * @param {any} config
      * @returns {any}
      */
-    createConsoleDriver($config) {
+    createConsoleDriver($config: Record<string, any>) {
         return new Winston(($config), [
             this.prepareHandler(new transports.Console({ colorize: true, format: format.colorize() }), $config)
         ]);
@@ -177,7 +177,7 @@ class LogManager extends Manager {
      * @param {any} config
      * @returns {any}
      */
-    createDailyDriver($config) {
+    createDailyDriver($config: Record<string, any>) {
         return new Winston(($config), [
             this.prepareHandler(new DailyRotateFile({
                 filename: $config['path'] || 'storage/logs/application.log',
@@ -196,7 +196,7 @@ class LogManager extends Manager {
      * @param {any} transport
      * @returns {any}
      */
-    prepareTransport(transport) {
+    prepareTransport(transport: any) {
         return transport
     }
 
@@ -206,7 +206,7 @@ class LogManager extends Manager {
      * @param {any} handlers
      * @returns {any}
      */
-    prepareHandlers($handlers) {
+    prepareHandlers($handlers: any) {
         return $handlers;
     }
 
@@ -217,7 +217,7 @@ class LogManager extends Manager {
      * @param {any} config
      * @returns {any}
      */
-    prepareHandler($handler, $config = {}) {
+    prepareHandler($handler: Function, $config: Record<string, any> = {}) {
         if (!($config['formatter'])) {
             $handler.format = (this.formatter());
         } else if ($config['formatter'] !== 'default') {
@@ -233,7 +233,7 @@ class LogManager extends Manager {
      * @param {any} config
      * @returns {any}
      */
-    formatter(config) {
+    formatter(config: Record<string, any>) {
         return new LineFormatter(config);
     }
 
@@ -243,7 +243,7 @@ class LogManager extends Manager {
      * @param {any} name
      * @returns {any}
      */
-    configurationFor(name) {
+    configurationFor(name: string) {
         return super.getConfig(`channels.${name}`);
     }
 
@@ -253,7 +253,7 @@ class LogManager extends Manager {
      * @param {any} exception
      * @returns {any}
      */
-    report($exception) {
+    report($exception: any) {
         this.driver().error($exception)
     }
 }
