@@ -28,7 +28,7 @@ module.exports = {
         "clover"
     ],
     "collectCoverageFrom": [
-        "<rootDir>/**/*.js",
+        "<rootDir>/**/*.ts",
         "!<rootDir>/test/**",
         "!<rootDir>/coverage/**",
         "!<rootDir>/node_modules/**",

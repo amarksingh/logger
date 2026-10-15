@@ -2,7 +2,7 @@
   "name": "@ostro/logger",
   "version": "1.0.0",
   "description": "Logger module for OstroJS",
-  "main": "LogManager.js",
+  "main": "LogManager.ts",
   "scripts": {
     "test": "npx c8 npx jest"
   },
