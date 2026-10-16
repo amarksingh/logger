@@ -1,30 +1,32 @@
-require('@ostro/support/helpers')
-const Manager = require('@ostro/support/manager')
-const LineFormatter = require('./LineFormatter')
-const Logger = require('./Logger')
-const InvalidArgumentException = require('./InvalidArgumentException')
-const { Winston, transports, format } = require('./winston');
-const DailyRotateFile = require('winston-daily-rotate-file');
-const fs = require('fs')
-const path = require('path')
-const { Console } = require('console');
+import '@ostro/support/helpers';
+import Manager from '@ostro/support/manager';
+import LineFormatter from './LineFormatter';
+import Logger from './Logger';
+import InvalidArgumentException from './InvalidArgumentException';
+import { Winston, transports, format } from './winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
+import fs from 'fs';
+import path from 'path';
+import { Console } from 'console';
+import { is_callable, collect } from '@ostro/support/function';
 
 class LogManager extends Manager {
-
     /**
-     * $type property.
-     * @type {any}
+     * Default type identifier for logging manager.
      */
-    $type = 'logging';
+    $type: string = 'logging';
+
+    declare $drivers: Record<string, Logger>;
+    declare $container: any;
 
     /**
-     * stack method.
+     * Create a new stack log channel instance.
      *
-     * @param {any} channels
-     * @param {any} channel
-     * @returns {any}
+     * @param channels - Array of channel names.
+     * @param channel - Optional channel name.
+     * @returns Logger instance configured with the stack driver.
      */
-    stack($channels: any, $channel: any = null) {
+    stack($channels: string[], $channel: string | null = null): Logger {
         return new Logger(
             this.createStackDriver({
                 channels: $channels
@@ -33,41 +35,41 @@ class LogManager extends Manager {
     }
 
     /**
-     * channel method.
+     * Get a log channel instance.
      *
-     * @param {any} channel
-     * @returns {any}
+     * @param channel - Channel name.
+     * @returns Logger instance for the channel.
      */
-    channel($channel: any = null) {
+    channel($channel: string | null = null): Logger {
         return this.driver($channel);
     }
 
     /**
-     * driver method.
+     * Get a log driver instance.
      *
-     * @param {any} driver
-     * @returns {any}
+     * @param driver - Driver/channel name.
+     * @returns Resolved Logger instance.
      */
-    driver($driver: any = null) {
+    driver($driver: string | null = null): Logger {
         return this.get($driver || this.getDefaultDriver());
     }
 
     /**
-     * get method.
+     * Attempt to get the log from the local cache.
      *
-     * @param {any} name
-     * @returns {any}
+     * @param name - Channel name.
+     * @returns Cached or newly created Logger instance.
      */
-    get($name: string) {
-        return this.$drivers[$name] || (this.$drivers[$name] = new Logger(this.resolve($name), this.configurationFor($name)))
+    get($name: string): Logger {
+        return this.$drivers[$name] || (this.$drivers[$name] = new Logger(this.resolve($name), this.configurationFor($name)));
     }
 
     /**
-     * createEmergencyLogger method.
+     * Create an emergency log handler.
      *
-     * @returns {any}
+     * @returns Emergency Logger instance.
      */
-    createEmergencyLogger() {
+    createEmergencyLogger(): Logger {
         const storagePath = typeof this.$container.storagePath === 'function'
             ? this.$container.storagePath()
             : path.resolve('storage');
@@ -85,56 +87,56 @@ class LogManager extends Manager {
     }
 
     /**
-     * resolve method.
+     * Resolve the given log instance by name.
      *
-     * @param {any} name
-     * @returns {any}
+     * @param name - Channel name.
+     * @returns Resolved driver instance.
+     * @throws InvalidArgumentException When channel configuration is not found.
      */
-    resolve($name: string) {
+    resolve($name: string): unknown {
         let $config = this.configurationFor($name);
         if (!($config)) {
             throw new InvalidArgumentException("Log [" + $name + "] is not defined.");
         }
-        return super.resolve($name, $config)
+        return super.resolve($name, $config);
     }
 
-
     /**
-     * createCustomDriver method.
+     * Create a custom log driver instance.
      *
-     * @param {any} config
-     * @returns {any}
+     * @param config - Driver configuration object.
+     * @returns Driver instance returned by the custom factory.
      */
-    createCustomDriver($config: Record<string, any>) {
-        let $via = $config['via']
+    createCustomDriver($config: Record<string, any>): unknown {
+        let $via = $config['via'];
         let $factory = is_callable($via) ? $via : this.$container.make($via);
         return $factory($config);
     }
 
     /**
-     * createStackDriver method.
+     * Create an aggregate log driver instance.
      *
-     * @param {any} config
-     * @returns {any}
+     * @param config - Stack driver configuration object.
+     * @returns Winston instance aggregating multiple handlers.
      */
-    createStackDriver($config: Record<string, any>) {
-        let $handlers = collect($config['channels']).flatMap(($channel) => {
-            let ch = this.channel($channel)
-            return ch.getLogger().getHandler()
+    createStackDriver($config: Record<string, any>): Winston {
+        let $handlers = collect($config['channels']).flatMap(($channel: string) => {
+            let ch = this.channel($channel);
+            return ch.getLogger().getHandler();
         }).all();
         if (!$config['ignore_exceptions']) {
             $handlers.handleExceptions = true;
         }
-        return new Winston(($config), $handlers);
+        return new Winston($config, $handlers);
     }
 
     /**
-     * createSyslogDriver method.
+     * Create a syslog driver instance.
      *
-     * @param {any} config
-     * @returns {any}
+     * @param config - Driver configuration object.
+     * @returns Console instance streaming to log files.
      */
-    createSyslogDriver($config: Record<string, any>) {
+    createSyslogDriver($config: Record<string, any>): Console {
         const output = fs.createWriteStream(path.resolve('storage/logs/application.log'));
         const errorOutput = fs.createWriteStream(path.resolve('storage/logs/application.log'));
         return new Console({
@@ -144,13 +146,13 @@ class LogManager extends Manager {
     }
 
     /**
-     * createSingleDriver method.
+     * Create an instance of the single file log driver.
      *
-     * @param {any} config
-     * @returns {any}
+     * @param config - Driver configuration object.
+     * @returns Winston instance for single file logging.
      */
-    createSingleDriver($config: Record<string, any>) {
-        return new Winston(($config), [
+    createSingleDriver($config: Record<string, any>): Winston {
+        return new Winston($config, [
             this.prepareHandler(
                 new transports.File({
                     filename: $config['path'] || 'storage/logs/application.log'
@@ -160,25 +162,25 @@ class LogManager extends Manager {
     }
 
     /**
-     * createConsoleDriver method.
+     * Create an instance of the console log driver.
      *
-     * @param {any} config
-     * @returns {any}
+     * @param config - Driver configuration object.
+     * @returns Winston instance for console output.
      */
-    createConsoleDriver($config: Record<string, any>) {
-        return new Winston(($config), [
+    createConsoleDriver($config: Record<string, any>): Winston {
+        return new Winston($config, [
             this.prepareHandler(new transports.Console({ colorize: true, format: format.colorize() }), $config)
         ]);
     }
 
     /**
-     * createDailyDriver method.
+     * Create an instance of the daily rotating file log driver.
      *
-     * @param {any} config
-     * @returns {any}
+     * @param config - Driver configuration object.
+     * @returns Winston instance for daily rotating file logging.
      */
-    createDailyDriver($config: Record<string, any>) {
-        return new Winston(($config), [
+    createDailyDriver($config: Record<string, any>): Winston {
+        return new Winston($config, [
             this.prepareHandler(new DailyRotateFile({
                 filename: $config['path'] || 'storage/logs/application.log',
                 datePattern: $config['date_pattern'] || 'YYYY-MM-DD',
@@ -191,71 +193,72 @@ class LogManager extends Manager {
     }
 
     /**
-     * prepareTransport method.
+     * Prepare the transport instance.
      *
-     * @param {any} transport
-     * @returns {any}
+     * @typeParam T - Transport type.
+     * @param transport - Transport instance.
+     * @returns Prepared transport instance.
      */
-    prepareTransport(transport: any) {
-        return transport
+    prepareTransport<T = unknown>(transport: T): T {
+        return transport;
     }
 
     /**
-     * prepareHandlers method.
+     * Prepare the log handlers.
      *
-     * @param {any} handlers
-     * @returns {any}
+     * @typeParam T - Handlers type.
+     * @param handlers - Handlers instance or collection.
+     * @returns Prepared handlers.
      */
-    prepareHandlers($handlers: any) {
+    prepareHandlers<T = unknown>($handlers: T): T {
         return $handlers;
     }
 
     /**
-     * prepareHandler method.
+     * Prepare the handler instance by assigning formatter.
      *
-     * @param {any} handler
-     * @param {any} config
-     * @returns {any}
+     * @param handler - Winston transport handler.
+     * @param config - Configuration options.
+     * @returns Prepared transport handler.
      */
-    prepareHandler($handler: Function, $config: Record<string, any> = {}) {
+    prepareHandler($handler: any, $config: Record<string, any> = {}): any {
         if (!($config['formatter'])) {
-            $handler.format = (this.formatter());
+            $handler.format = this.formatter();
         } else if ($config['formatter'] !== 'default') {
-            $handler.format = (this.$container.make($config['formatter'], $config['formatter_with'] || null));
+            $handler.format = this.$container.make($config['formatter'], $config['formatter_with'] || null);
         }
 
         return $handler;
     }
 
     /**
-     * formatter method.
+     * Get line formatter instance.
      *
-     * @param {any} config
-     * @returns {any}
+     * @param config - Formatter configuration options.
+     * @returns LineFormatter instance.
      */
-    formatter(config: Record<string, any>) {
+    formatter(config: Record<string, unknown> = {}): LineFormatter {
         return new LineFormatter(config);
     }
 
     /**
-     * configurationFor method.
+     * Get the log connection configuration.
      *
-     * @param {any} name
-     * @returns {any}
+     * @param name - Channel name.
+     * @returns Channel configuration.
      */
-    configurationFor(name: string) {
+    configurationFor(name: string): Record<string, any> {
         return super.getConfig(`channels.${name}`);
     }
 
     /**
-     * report method.
+     * Report an exception to the default log driver.
      *
-     * @param {any} exception
-     * @returns {any}
+     * @param exception - Exception or error to report.
      */
-    report($exception: any) {
-        this.driver().error($exception)
+    report($exception: unknown): void {
+        this.driver().error($exception);
     }
 }
 
-module.exports = LogManager
+export = LogManager;

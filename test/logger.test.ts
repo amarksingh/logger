@@ -1,17 +1,16 @@
-const path = require('path');
-const fs = require('fs');
-const os = require('os');
-const { format } = require('winston');
+import path from 'path';
+import fs from 'fs';
+import os from 'os';
+import { format } from 'winston';
 
-// Require support helpers
-require('@ostro/support/helpers');
+import '@ostro/support/helpers';
 
-const InvalidArgumentException = require('../InvalidArgumentException');
-const LineFormatter = require('../LineFormatter');
-const Logger = require('../Logger');
-const { Winston, transports } = require('../winston');
-const LogManager = require('../LogManager');
-const LogServiceProvider = require('../logServiceProvider');
+import InvalidArgumentException from '../InvalidArgumentException';
+import LineFormatter from '../LineFormatter';
+import Logger from '../Logger';
+import { Winston, transports } from '../winston';
+import LogManager from '../LogManager';
+import LogServiceProvider from '../logServiceProvider';
 
 describe('InvalidArgumentException', () => {
     test('creates an instance with message and statusCode', () => {
@@ -30,26 +29,26 @@ describe('LineFormatter', () => {
         const formatter = new LineFormatter();
         expect(formatter).toBeDefined();
 
-        const messageFormatFn = LineFormatter.prototype.messageFormat.call({});
+        const messageFormatFn = LineFormatter.prototype.messageFormat.call({} as any);
         expect(typeof messageFormatFn.transform).toBe('function');
 
         // String message
-        const infoString = { level: 'info', message: 'User logged in', timestamp: '2026-09-06 00:00:00' };
-        messageFormatFn.transform(infoString);
-        const symbolFormat = Object.getOwnPropertySymbols(infoString).find(s => s.toString().includes('message'));
+        const infoString: Record<string | symbol, any> = { level: 'info', message: 'User logged in', timestamp: '2026-09-06 00:00:00' };
+        messageFormatFn.transform(infoString as any);
+        const symbolFormat = Object.getOwnPropertySymbols(infoString).find(s => s.toString().includes('message'))!;
         const formattedStr = infoString[symbolFormat];
         expect(formattedStr).toBe('[2026-09-06 00:00:00] [info] : User logged in\n');
 
         // Object message
-        const infoObj = { level: 'debug', message: { id: 1, active: true }, timestamp: '2026-09-06 00:00:00' };
-        messageFormatFn.transform(infoObj);
+        const infoObj: Record<string | symbol, any> = { level: 'debug', message: { id: 1, active: true }, timestamp: '2026-09-06 00:00:00' };
+        messageFormatFn.transform(infoObj as any);
         const formattedObj = infoObj[symbolFormat];
         expect(formattedObj).toContain('{\n  "id": 1,\n  "active": true\n}');
 
         // Error message
         const testErr = new Error('Database connection failed');
-        const infoErr = { level: 'error', message: testErr, timestamp: '2026-09-06 00:00:00' };
-        messageFormatFn.transform(infoErr);
+        const infoErr: Record<string | symbol, any> = { level: 'error', message: testErr, timestamp: '2026-09-06 00:00:00' };
+        messageFormatFn.transform(infoErr as any);
         const formattedErr = infoErr[symbolFormat];
         expect(formattedErr).toContain('Error: Database connection failed');
     });
@@ -64,7 +63,6 @@ describe('LineFormatter', () => {
 
 describe('Winston Wrapper', () => {
     test('instantiates with custom transports and logs message', () => {
-        const logs = [];
         const customTransport = new transports.Console({
             silent: true
         });
@@ -121,9 +119,9 @@ describe('Logger', () => {
 
 describe('LogServiceProvider', () => {
     test('registers logger singleton in application container', () => {
-        const singletons = {};
+        const singletons: Record<string, any> = {};
         const mockApp = {
-            singleton: jest.fn((name, factory) => {
+            singleton: jest.fn((name: string, factory: (app: any) => any) => {
                 singletons[name] = factory(mockApp);
             }),
             make: jest.fn().mockReturnValue({})

@@ -1,150 +1,141 @@
-const kLogger = Symbol('logger')
-const kConfig = Symbol('config')
+const kLogger: unique symbol = Symbol('logger');
+const kConfig: unique symbol = Symbol('config');
+
 class Logger {
+    [kLogger]: any;
+    [kConfig]?: unknown;
+
     /**
-     * constructor method.
+     * Create a new Logger instance.
      *
-     * @param {any} logger
-     * @param {any} config
-     * @returns {any}
+     * @param logger - Underlying logger instance.
+     * @param config - Driver configuration or event dispatcher.
      */
-    constructor($logger: any, $config: Record<string, any>) {
-        this[kLogger] = $logger
+    constructor(logger: any, config?: unknown) {
+        this[kLogger] = logger;
     }
 
     /**
-     * emergency method.
+     * Log an emergency message to the logs.
      *
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    emergency($message: string, $context: any[] = []) {
-        this.writeLog('emerg', $message, $context);
+    emergency(message: unknown, context: unknown = []): void {
+        this.writeLog('emerg', message, context);
     }
 
     /**
-     * alert method.
+     * Log an alert message to the logs.
      *
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    alert($message: string, $context: any[] = []) {
-        this.writeLog('alert', $message, $context);
+    alert(message: unknown, context: unknown = []): void {
+        this.writeLog('alert', message, context);
     }
 
     /**
-     * critical method.
+     * Log a critical message to the logs.
      *
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    critical($message: string, $context: any[] = []) {
-        this.writeLog('crit', $message, $context);
+    critical(message: unknown, context: unknown = []): void {
+        this.writeLog('crit', message, context);
     }
 
     /**
-     * error method.
+     * Log an error message to the logs.
      *
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    error($message: string, $context: any[] = []) {
-        this.writeLog('error', $message, $context);
+    error(message: unknown, context: unknown = []): void {
+        this.writeLog('error', message, context);
     }
 
     /**
-     * warning method.
+     * Log a warning message to the logs.
      *
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    warning($message: string, $context: any[] = []) {
-        this.writeLog('warning', $message, $context);
+    warning(message: unknown, context: unknown = []): void {
+        this.writeLog('warning', message, context);
     }
 
     /**
-     * notice method.
+     * Log a notice to the logs.
      *
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    notice($message: string, $context: any[] = []) {
-        this.writeLog('notice', $message, $context);
+    notice(message: unknown, context: unknown = []): void {
+        this.writeLog('notice', message, context);
     }
 
     /**
-     * info method.
+     * Log an informational message to the logs.
      *
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    info($message: string, $context: any[] = []) {
-        this.writeLog('info', $message, $context);
+    info(message: unknown, context: unknown = []): void {
+        this.writeLog('info', message, context);
     }
 
     /**
-     * debug method.
+     * Log a debug message to the logs.
      *
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    debug($message: string, $context: any[] = []) {
-        this.writeLog('debug', $message, $context);
+    debug(message: unknown, context: unknown = []): void {
+        this.writeLog('debug', message, context);
     }
 
     /**
-     * log method.
+     * Log a message with arbitrary level to the logs.
      *
-     * @param {any} level
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param level - Log level.
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    log($level: any, $message: string, $context: any[] = []) {
-        this.writeLog('log', $message, $context);
+    log(level: unknown, message: unknown, context: unknown = []): void {
+        this.writeLog('log', message, context);
     }
 
     /**
-     * write method.
+     * Dynamically pass log calls.
      *
-     * @param {any} level
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param level - Log level.
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    write($level: any, $message: string, $context: any[] = []) {
-        this.writeLog('write', $message, $context);
+    write(level: unknown, message: unknown, context: unknown = []): void {
+        this.writeLog('write', message, context);
     }
 
     /**
-     * writeLog method.
+     * Write a log message to the underlying logger.
      *
-     * @param {any} level
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param level - Log level.
+     * @param message - Log message.
+     * @param context - Additional contextual data.
      */
-    writeLog($level: any, $message: string, $context: any) {
-        this[kLogger].log($level, $message, $context);
+    writeLog(level: unknown, message: unknown, context: unknown): void {
+        this[kLogger].log(level, message, context);
     }
 
     /**
-     * getLogger method.
+     * Retrieve the underlying logger instance.
      *
-     * @returns {any}
+     * @returns The underlying logger.
      */
-    getLogger() {
+    getLogger(): any {
         return this[kLogger];
     }
-
 }
 
-module.exports = Logger
+export = Logger;

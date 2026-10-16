@@ -1,41 +1,47 @@
-const { format: { combine, splat, simple, timestamp, json, label, printf, prettyPrint, colorize } } = require('winston')
+import { format } from 'winston';
+import type { Logform } from 'winston';
+
+const { combine, timestamp, prettyPrint, printf } = format;
 
 class Formatter {
     /**
-     * constructor method.
+     * Create a new Formatter instance.
      *
-     * @param {any} config
-     * @returns {any}
+     * @param config - Configuration options.
      */
-    constructor(config: Record<string, any> = {}) {
-        return this.combine(config)
+    constructor(config: Record<string, unknown> = {}) {
+        return this.combine(config) as unknown as Formatter;
     }
+
     /**
-     * messageFormat method.
+     * Define the custom printf message formatting.
      *
-     * @returns {any}
+     * @returns Formatted logform Format instance.
      */
-    messageFormat() {
-        return printf(({ level, message, timestamp }) => {
+    messageFormat(): Logform.Format {
+        return printf(({ level, message, timestamp }: { level?: unknown; message?: unknown; timestamp?: unknown }) => {
             if (message instanceof Error) {
-                message = message.stack
-            } else if (typeof message == 'object') {
-                message = JSON.stringify(message, undefined, 2)
+                message = message.stack;
+            } else if (typeof message === 'object') {
+                message = JSON.stringify(message, undefined, 2);
             }
-            return `[${timestamp}] [${level}] : ${message}\n`
-        })
+            return `[${timestamp}] [${level}] : ${message}\n`;
+        });
     }
+
     /**
-     * combine method.
+     * Combine timestamp, prettyPrint, and messageFormat formats.
      *
-     * @returns {any}
+     * @param config - Configuration options.
+     * @returns Combined Logform Format instance.
      */
-    combine() {
+    combine(config?: Record<string, unknown>): Logform.Format {
         return combine(
             timestamp(),
             prettyPrint(),
             this.messageFormat(),
-        )
+        );
     }
 }
-module.exports = Formatter
+
+export = Formatter;

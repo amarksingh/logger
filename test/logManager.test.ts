@@ -1,18 +1,18 @@
-const path = require('path');
-const fs = require('fs');
-const os = require('os');
-const { format } = require('winston');
+import path from 'path';
+import fs from 'fs';
+import os from 'os';
+import { format } from 'winston';
 
-require('@ostro/support/helpers');
+import '@ostro/support/helpers';
 
-const InvalidArgumentException = require('../InvalidArgumentException');
-const LineFormatter = require('../LineFormatter');
-const Logger = require('../Logger');
-const { Winston, transports } = require('../winston');
-const LogManager = require('../LogManager');
+import InvalidArgumentException from '../InvalidArgumentException';
+import LineFormatter from '../LineFormatter';
+import Logger from '../Logger';
+import { Winston, transports } from '../winston';
+import LogManager from '../LogManager';
 
 describe('LogManager', () => {
-    let tmpDir;
+    let tmpDir: string;
 
     beforeAll(() => {
         tmpDir = path.join(os.tmpdir(), `ostro-logger-test-${Date.now()}`);
@@ -24,9 +24,9 @@ describe('LogManager', () => {
         // Keep directory until process exit to avoid stream close race conditions
     });
 
-    function createMockContainer(configData = {}) {
+    function createMockContainer(configData: Record<string, any> = {}): any {
         return {
-            make: jest.fn((key, args) => {
+            make: jest.fn((key: any, args: any) => {
                 if (key === 'config') return configData;
                 if (typeof key === 'function') return key(args);
                 return null;
@@ -148,12 +148,12 @@ describe('LogManager', () => {
                 }
             }
         });
-        container.make.mockImplementation((key) => {
-            if (key === 'config') return container.make._config;
+        container.make.mockImplementation((key: any) => {
+            if (key === 'config') return (container.make as any)._config;
             if (key === 'customServiceFactory') return customFactory;
             return null;
         });
-        container.make._config = {
+        (container.make as any)._config = {
             logging: {
                 channels: {
                     custom_callable: {
@@ -258,12 +258,12 @@ describe('LogManager', () => {
                 }
             }
         });
-        container.make.mockImplementation((key, args) => {
-            if (key === 'config') return container.make._config;
+        container.make.mockImplementation((key: any, args: any) => {
+            if (key === 'config') return (container.make as any)._config;
             if (key === 'myCustomFormatter') return customFormatterInstance;
             return null;
         });
-        container.make._config = {
+        (container.make as any)._config = {
             logging: {
                 channels: {
                     custom_formatter: {
@@ -289,7 +289,7 @@ describe('LogManager', () => {
 
         // Test formatter without formatter_with
         const managerWithDefaultWith = new LogManager({
-            make: (key) => (key === 'config' ? {
+            make: (key: any) => (key === 'config' ? {
                 logging: {
                     channels: {
                         formatter_no_with: {

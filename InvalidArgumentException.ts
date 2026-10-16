@@ -1,18 +1,20 @@
 class InvalidArgumentException extends Error {
+    error: string;
+    statusCode: number;
+
     /**
-     * constructor method.
+     * Create a new InvalidArgumentException instance.
      *
-     * @param {any} message
-     * @returns {any}
+     * @param message - The exception error message.
      */
     constructor(message: string) {
         super();
         this.name = this.constructor.name;
         this.message = message;
-        this.error = message
+        this.error = message;
         this.statusCode = 500;
         Error.captureStackTrace(this, this.constructor);
-
     }
 }
-module.exports = InvalidArgumentException
+
+export = InvalidArgumentException;

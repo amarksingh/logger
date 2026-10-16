@@ -1,35 +1,39 @@
-const { createLogger, transports, format } = require('winston')
-const kLogger = Symbol('logger')
+import { createLogger, transports, format } from 'winston';
+import type { Logger as WinstonLogger } from 'winston';
+
+const kLogger: unique symbol = Symbol('logger');
+
 class Winston {
+    [kLogger]: WinstonLogger;
+
     /**
-     * constructor method.
+     * Create a new Winston instance.
      *
-     * @param {any} config
-     * @param {any} handlers
-     * @returns {any}
+     * @param config - Driver configuration or channel name.
+     * @param handlers - Winston transport handlers.
      */
-    constructor(config: Record<string, any>, handlers: any) {
-        this[kLogger] = this.createLogger(handlers)
+    constructor(config: Record<string, unknown> | string, handlers: unknown) {
+        this[kLogger] = this.createLogger(handlers);
     }
 
     /**
-     * log method.
+     * Log a message with the specified level and context.
      *
-     * @param {any} level
-     * @param {any} message
-     * @param {any} context
-     * @returns {any}
+     * @param level - Log severity level.
+     * @param message - Message to log.
+     * @param context - Additional contextual metadata.
      */
-    log(level: any, message: string, context: any) {
-        this[kLogger].log(level, message, context);
+    log(level: string, message: unknown, context?: unknown): void {
+        this[kLogger].log(level, message as any, context);
     }
+
     /**
-     * createLogger method.
+     * Create an underlying Winston logger instance with custom log levels.
      *
-     * @param {any} handlers
-     * @returns {any}
+     * @param handlers - Transport handlers.
+     * @returns Winston Logger instance.
      */
-    createLogger(handlers: any) {
+    createLogger(handlers: unknown): WinstonLogger {
         return createLogger({
             levels: {
                 emerg: 0,
@@ -45,21 +49,22 @@ class Winston {
                 verbose: 10,
                 silly: 11
             },
-            transports: handlers
-        })
-    }
-    /**
-     * getHandler method.
-     *
-     * @returns {any}
-     */
-    getHandler() {
-        return this[kLogger]
+            transports: handlers as any
+        });
     }
 
+    /**
+     * Retrieve the underlying Winston logger handler.
+     *
+     * @returns The underlying Winston logger instance.
+     */
+    getHandler(): WinstonLogger {
+        return this[kLogger];
+    }
 }
-module.exports = {
+
+export {
     Winston,
     transports,
     format
-}
+};

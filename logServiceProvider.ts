@@ -1,16 +1,17 @@
-const ServiceProvider = require('@ostro/support/serviceProvider');
-const LogManager = require('./LogManager');
-class logServiceProvider extends ServiceProvider {
-    /**
-     * register method.
-     *
-     * @returns {any}
-     */
-    register() {
-        this.$app.singleton('logger', function(app) {
-            return new LogManager(app)
-        })
-    }
+import ServiceProvider from '@ostro/support/serviceProvider';
+import LogManager from './LogManager';
 
+class logServiceProvider extends ServiceProvider {
+    declare $app: any;
+
+    /**
+     * Register logger service in application container.
+     */
+    register(): void {
+        this.$app.singleton('logger', function(app: any) {
+            return new LogManager(app);
+        });
+    }
 }
-module.exports = logServiceProvider
+
+export = logServiceProvider;
