@@ -169,7 +169,7 @@ class LogManager extends Manager {
      */
     createConsoleDriver($config: Record<string, any>): Winston {
         return new Winston($config, [
-            this.prepareHandler(new transports.Console({ colorize: true, format: format.colorize() }), $config)
+            this.prepareHandler(new transports.Console({ colorize: true, format: format.colorize() } as any), $config)
         ]);
     }
 

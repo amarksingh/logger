@@ -2,8 +2,24 @@
   "name": "@ostro/logger",
   "version": "1.0.0",
   "description": "Logger module for OstroJS",
-  "main": "LogManager.ts",
+  "main": "build/LogManager.js",
+  "types": "build/LogManager.d.ts",
+  "files": [
+    "build"
+  ],
+  "exports": {
+    ".": {
+      "types": "./build/LogManager.d.ts",
+      "default": "./build/LogManager.js"
+    },
+    "./*": {
+      "types": "./build/*.d.ts",
+      "default": "./build/*.js"
+    }
+  },
   "scripts": {
+    "build": "npx tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
     "test": "npx c8 npx jest"
   },
   "dependencies": {
