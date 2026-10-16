@@ -261,4 +261,4 @@ class LogManager extends Manager {
     }
 }
 
-export = LogManager;
+export default LogManager;

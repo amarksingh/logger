@@ -14,4 +14,4 @@ class logServiceProvider extends ServiceProvider {
     }
 }
 
-export = logServiceProvider;
+export default logServiceProvider;
