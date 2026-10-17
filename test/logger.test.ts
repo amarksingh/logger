@@ -5,12 +5,12 @@ import { format } from 'winston';
 
 import '@ostro/support/helpers';
 
-import InvalidArgumentException from '../InvalidArgumentException';
-import LineFormatter from '../LineFormatter';
-import Logger from '../Logger';
-import { Winston, transports } from '../winston';
-import LogManager from '../LogManager';
-import LogServiceProvider from '../logServiceProvider';
+import InvalidArgumentException from '../src/InvalidArgumentException';
+import LineFormatter from '../src/LineFormatter';
+import Logger from '../src/Logger';
+import { Winston, transports } from '../src/winston';
+import LogManager from '../src/LogManager';
+import LogServiceProvider from '../src/logServiceProvider';
 
 describe('InvalidArgumentException', () => {
     test('creates an instance with message and statusCode', () => {

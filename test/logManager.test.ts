@@ -5,11 +5,11 @@ import { format } from 'winston';
 
 import '@ostro/support/helpers';
 
-import InvalidArgumentException from '../InvalidArgumentException';
-import LineFormatter from '../LineFormatter';
-import Logger from '../Logger';
-import { Winston, transports } from '../winston';
-import LogManager from '../LogManager';
+import InvalidArgumentException from '../src/InvalidArgumentException';
+import LineFormatter from '../src/LineFormatter';
+import Logger from '../src/Logger';
+import { Winston, transports } from '../src/winston';
+import LogManager from '../src/LogManager';
 
 describe('LogManager', () => {
     let tmpDir: string;
