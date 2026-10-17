@@ -1,7 +1,7 @@
 # @ostro/logger — Antigravity AI Architecture & Knowledge Base
 
 > **Package Name**: `@ostro/logger`
-> **Version**: `1.0.0`
+> **Version**: `2.0.0-alpha.1`
 > **Role in Ecosystem**: Modular Core Framework Library
 
 ---

@@ -1,6 +1,6 @@
 {
   "name": "@ostro/logger",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha.1",
   "description": "Logger module for OstroJS",
   "main": "build/LogManager.js",
   "types": "build/LogManager.d.ts",
@@ -23,8 +23,8 @@
     "test": "npx c8 npx jest"
   },
   "dependencies": {
-    "@ostro/contracts": "^1.0.0",
-    "@ostro/support": "^1.0.2",
+    "@ostro/contracts": "^2.0.0-alpha.1",
+    "@ostro/support": "^2.0.0-alpha.1",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   },
