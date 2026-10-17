@@ -23,7 +23,7 @@ class Winston {
      * @param message - Message to log.
      * @param context - Additional contextual metadata.
      */
-    log(level: string, message: unknown, context?: unknown): void {
+    public log(level: string, message: unknown, context?: unknown): void {
         this[kLogger].log(level, message as any, context);
     }
 
@@ -33,7 +33,7 @@ class Winston {
      * @param handlers - Transport handlers.
      * @returns Winston Logger instance.
      */
-    createLogger(handlers: unknown): WinstonLogger {
+    public createLogger(handlers: unknown): WinstonLogger {
         return createLogger({
             levels: {
                 emerg: 0,
@@ -58,7 +58,7 @@ class Winston {
      *
      * @returns The underlying Winston logger instance.
      */
-    getHandler(): WinstonLogger {
+    public getHandler(): WinstonLogger {
         return this[kLogger];
     }
 }

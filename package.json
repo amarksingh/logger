@@ -51,6 +51,8 @@
   },
   "homepage": "https://github.com/ostrojs/logger#readme",
   "devDependencies": {
-    "jest": "^30.5.1"
+    "jest": "^30.5.1",
+    "typescript": "^5.8.0",
+    "@types/node": "^22.0.0"
   }
 }

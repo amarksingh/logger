@@ -7,7 +7,7 @@ class logServiceProvider extends ServiceProvider {
     /**
      * Register logger service in application container.
      */
-    register(): void {
+    public register(): void {
         this.$app.singleton('logger', function(app: any) {
             return new LogManager(app);
         });

@@ -21,7 +21,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    emergency(message: unknown, context: unknown = []): void {
+    public emergency(message: unknown, context: unknown = []): void {
         this.writeLog('emerg', message, context);
     }
 
@@ -31,7 +31,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    alert(message: unknown, context: unknown = []): void {
+    public alert(message: unknown, context: unknown = []): void {
         this.writeLog('alert', message, context);
     }
 
@@ -41,7 +41,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    critical(message: unknown, context: unknown = []): void {
+    public critical(message: unknown, context: unknown = []): void {
         this.writeLog('crit', message, context);
     }
 
@@ -51,7 +51,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    error(message: unknown, context: unknown = []): void {
+    public error(message: unknown, context: unknown = []): void {
         this.writeLog('error', message, context);
     }
 
@@ -61,7 +61,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    warning(message: unknown, context: unknown = []): void {
+    public warning(message: unknown, context: unknown = []): void {
         this.writeLog('warning', message, context);
     }
 
@@ -71,7 +71,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    notice(message: unknown, context: unknown = []): void {
+    public notice(message: unknown, context: unknown = []): void {
         this.writeLog('notice', message, context);
     }
 
@@ -81,7 +81,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    info(message: unknown, context: unknown = []): void {
+    public info(message: unknown, context: unknown = []): void {
         this.writeLog('info', message, context);
     }
 
@@ -91,7 +91,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    debug(message: unknown, context: unknown = []): void {
+    public debug(message: unknown, context: unknown = []): void {
         this.writeLog('debug', message, context);
     }
 
@@ -102,7 +102,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    log(level: unknown, message: unknown, context: unknown = []): void {
+    public log(level: unknown, message: unknown, context: unknown = []): void {
         this.writeLog('log', message, context);
     }
 
@@ -113,7 +113,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    write(level: unknown, message: unknown, context: unknown = []): void {
+    public write(level: unknown, message: unknown, context: unknown = []): void {
         this.writeLog('write', message, context);
     }
 
@@ -124,7 +124,7 @@ class Logger {
      * @param message - Log message.
      * @param context - Additional contextual data.
      */
-    writeLog(level: unknown, message: unknown, context: unknown): void {
+    public writeLog(level: unknown, message: unknown, context: unknown): void {
         this[kLogger].log(level, message, context);
     }
 
@@ -133,7 +133,7 @@ class Logger {
      *
      * @returns The underlying logger.
      */
-    getLogger(): any {
+    public getLogger(): any {
         return this[kLogger];
     }
 }

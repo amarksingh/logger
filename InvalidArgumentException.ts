@@ -1,6 +1,6 @@
 class InvalidArgumentException extends Error {
-    error: string;
-    statusCode: number;
+    public error: string;
+    public statusCode: number;
 
     /**
      * Create a new InvalidArgumentException instance.

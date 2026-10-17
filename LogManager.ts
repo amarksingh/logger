@@ -14,7 +14,7 @@ class LogManager extends Manager {
     /**
      * Default type identifier for logging manager.
      */
-    $type: string = 'logging';
+    public $type: string = 'logging';
 
     declare $drivers: Record<string, Logger>;
     declare $container: any;
@@ -26,7 +26,7 @@ class LogManager extends Manager {
      * @param channel - Optional channel name.
      * @returns Logger instance configured with the stack driver.
      */
-    stack($channels: string[], $channel: string | null = null): Logger {
+    public stack($channels: string[], $channel: string | null = null): Logger {
         return new Logger(
             this.createStackDriver({
                 channels: $channels
@@ -40,7 +40,7 @@ class LogManager extends Manager {
      * @param channel - Channel name.
      * @returns Logger instance for the channel.
      */
-    channel($channel: string | null = null): Logger {
+    public channel($channel: string | null = null): Logger {
         return this.driver($channel);
     }
 
@@ -50,7 +50,7 @@ class LogManager extends Manager {
      * @param driver - Driver/channel name.
      * @returns Resolved Logger instance.
      */
-    driver($driver: string | null = null): Logger {
+    public driver($driver: string | null = null): Logger {
         return this.get($driver || this.getDefaultDriver());
     }
 
@@ -69,7 +69,7 @@ class LogManager extends Manager {
      *
      * @returns Emergency Logger instance.
      */
-    createEmergencyLogger(): Logger {
+    public createEmergencyLogger(): Logger {
         const storagePath = typeof this.$container.storagePath === 'function'
             ? this.$container.storagePath()
             : path.resolve('storage');
@@ -93,7 +93,7 @@ class LogManager extends Manager {
      * @returns Resolved driver instance.
      * @throws InvalidArgumentException When channel configuration is not found.
      */
-    resolve($name: string): unknown {
+    public resolve($name: string): unknown {
         let $config = this.configurationFor($name);
         if (!($config)) {
             throw new InvalidArgumentException("Log [" + $name + "] is not defined.");
@@ -107,7 +107,7 @@ class LogManager extends Manager {
      * @param config - Driver configuration object.
      * @returns Driver instance returned by the custom factory.
      */
-    createCustomDriver($config: Record<string, any>): unknown {
+    public createCustomDriver($config: Record<string, any>): unknown {
         let $via = $config['via'];
         let $factory = is_callable($via) ? $via : this.$container.make($via);
         return $factory($config);
@@ -119,7 +119,7 @@ class LogManager extends Manager {
      * @param config - Stack driver configuration object.
      * @returns Winston instance aggregating multiple handlers.
      */
-    createStackDriver($config: Record<string, any>): Winston {
+    public createStackDriver($config: Record<string, any>): Winston {
         let $handlers = collect($config['channels']).flatMap(($channel: string) => {
             let ch = this.channel($channel);
             return ch.getLogger().getHandler();
@@ -136,7 +136,7 @@ class LogManager extends Manager {
      * @param config - Driver configuration object.
      * @returns Console instance streaming to log files.
      */
-    createSyslogDriver($config: Record<string, any>): Console {
+    public createSyslogDriver($config: Record<string, any>): Console {
         const output = fs.createWriteStream(path.resolve('storage/logs/application.log'));
         const errorOutput = fs.createWriteStream(path.resolve('storage/logs/application.log'));
         return new Console({
@@ -151,7 +151,7 @@ class LogManager extends Manager {
      * @param config - Driver configuration object.
      * @returns Winston instance for single file logging.
      */
-    createSingleDriver($config: Record<string, any>): Winston {
+    public createSingleDriver($config: Record<string, any>): Winston {
         return new Winston($config, [
             this.prepareHandler(
                 new transports.File({
@@ -167,7 +167,7 @@ class LogManager extends Manager {
      * @param config - Driver configuration object.
      * @returns Winston instance for console output.
      */
-    createConsoleDriver($config: Record<string, any>): Winston {
+    public createConsoleDriver($config: Record<string, any>): Winston {
         return new Winston($config, [
             this.prepareHandler(new transports.Console({ colorize: true, format: format.colorize() } as any), $config)
         ]);
@@ -179,7 +179,7 @@ class LogManager extends Manager {
      * @param config - Driver configuration object.
      * @returns Winston instance for daily rotating file logging.
      */
-    createDailyDriver($config: Record<string, any>): Winston {
+    public createDailyDriver($config: Record<string, any>): Winston {
         return new Winston($config, [
             this.prepareHandler(new DailyRotateFile({
                 filename: $config['path'] || 'storage/logs/application.log',
@@ -199,7 +199,7 @@ class LogManager extends Manager {
      * @param transport - Transport instance.
      * @returns Prepared transport instance.
      */
-    prepareTransport<T = unknown>(transport: T): T {
+    public prepareTransport<T = unknown>(transport: T): T {
         return transport;
     }
 
@@ -210,7 +210,7 @@ class LogManager extends Manager {
      * @param handlers - Handlers instance or collection.
      * @returns Prepared handlers.
      */
-    prepareHandlers<T = unknown>($handlers: T): T {
+    public prepareHandlers<T = unknown>($handlers: T): T {
         return $handlers;
     }
 
@@ -221,7 +221,7 @@ class LogManager extends Manager {
      * @param config - Configuration options.
      * @returns Prepared transport handler.
      */
-    prepareHandler($handler: any, $config: Record<string, any> = {}): any {
+    public prepareHandler($handler: any, $config: Record<string, any> = {}): any {
         if (!($config['formatter'])) {
             $handler.format = this.formatter();
         } else if ($config['formatter'] !== 'default') {
@@ -237,7 +237,7 @@ class LogManager extends Manager {
      * @param config - Formatter configuration options.
      * @returns LineFormatter instance.
      */
-    formatter(config: Record<string, unknown> = {}): LineFormatter {
+    public formatter(config: Record<string, unknown> = {}): LineFormatter {
         return new LineFormatter(config);
     }
 
@@ -247,7 +247,7 @@ class LogManager extends Manager {
      * @param name - Channel name.
      * @returns Channel configuration.
      */
-    configurationFor(name: string): Record<string, any> {
+    public configurationFor(name: string): Record<string, any> {
         return super.getConfig(`channels.${name}`);
     }
 
@@ -256,7 +256,7 @@ class LogManager extends Manager {
      *
      * @param exception - Exception or error to report.
      */
-    report($exception: unknown): void {
+    public report($exception: unknown): void {
         this.driver().error($exception);
     }
 }

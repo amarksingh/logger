@@ -18,7 +18,7 @@ class Formatter {
      *
      * @returns Formatted logform Format instance.
      */
-    messageFormat(): Logform.Format {
+    public messageFormat(): Logform.Format {
         return printf(({ level, message, timestamp }: { level?: unknown; message?: unknown; timestamp?: unknown }) => {
             if (message instanceof Error) {
                 message = message.stack;
@@ -35,7 +35,7 @@ class Formatter {
      * @param config - Configuration options.
      * @returns Combined Logform Format instance.
      */
-    combine(config?: Record<string, unknown>): Logform.Format {
+    public combine(config?: Record<string, unknown>): Logform.Format {
         return combine(
             timestamp(),
             prettyPrint(),
